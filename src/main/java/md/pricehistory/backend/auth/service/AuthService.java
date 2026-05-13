@@ -11,6 +11,7 @@ import md.pricehistory.backend.auth.dto.IssuedAuthToken;
 import md.pricehistory.backend.user.entity.UserAccountEntity;
 import md.pricehistory.backend.user.service.UserService;
 import md.pricehistory.backend.common.ApiException;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Profile("!swagger")
 public class AuthService {
 
     private final UserService userService;

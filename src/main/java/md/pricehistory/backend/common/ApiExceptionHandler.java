@@ -17,6 +17,7 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 
 @RestControllerAdvice
 class ApiExceptionHandler {
@@ -94,6 +95,13 @@ class ApiExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(error(HttpStatus.NOT_FOUND.value(), "No route found for " + request.getRequestURI(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    ResponseEntity<ApiError> handleAuthorizationDenied(AuthorizationDeniedException exception, HttpServletRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(error(HttpStatus.FORBIDDEN.value(), "Access Denied: You don't have permission to perform this action", request.getRequestURI()));
     }
 
     @ExceptionHandler(Exception.class)

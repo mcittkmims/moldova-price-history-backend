@@ -3,10 +3,12 @@ package md.pricehistory.backend.auth.service;
 import java.time.Duration;
 import md.pricehistory.backend.auth.dto.IssuedAuthToken;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
 @Service
+@Profile("!swagger")
 public class AuthCookieService {
 
     private final String authCookieName;

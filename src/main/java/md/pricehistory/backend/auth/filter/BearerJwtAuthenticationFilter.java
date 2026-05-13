@@ -2,39 +2,35 @@ package md.pricehistory.backend.auth.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
+import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
-@Profile("!swagger")
-public class CookieJwtAuthenticationFilter extends OncePerRequestFilter {
+@Profile("swagger")
+public class BearerJwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtDecoder jwtDecoder;
     private final Converter<Jwt, Authentication> jwtAuthenticationConverter;
-    private final String authCookieName;
+    private final DefaultBearerTokenResolver bearerTokenResolver = new DefaultBearerTokenResolver();
 
-    public CookieJwtAuthenticationFilter(
+    public BearerJwtAuthenticationFilter(
             JwtDecoder jwtDecoder,
-            Converter<Jwt, Authentication> jwtAuthenticationConverter,
-            @Value("${price-history.auth-cookie-name:pricehistory_access}") String authCookieName
+            Converter<Jwt, Authentication> jwtAuthenticationConverter
     ) {
         this.jwtDecoder = jwtDecoder;
         this.jwtAuthenticationConverter = jwtAuthenticationConverter;
-        this.authCookieName = authCookieName;
     }
 
     @Override
@@ -49,16 +45,15 @@ public class CookieJwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private Optional<String> resolveToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null || cookies.length == 0) {
-            return Optional.empty();
+    private java.util.Optional<String> resolveToken(HttpServletRequest request) {
+        try {
+            String token = bearerTokenResolver.resolve(request);
+            if (token != null && !token.isBlank()) {
+                return java.util.Optional.of(token);
+            }
+        } catch (OAuth2AuthenticationException ignored) {
         }
-        return Arrays.stream(cookies)
-                .filter((cookie) -> authCookieName.equals(cookie.getName()))
-                .map(Cookie::getValue)
-                .filter((value) -> value != null && !value.isBlank())
-                .findFirst();
+        return java.util.Optional.empty();
     }
 
     private void authenticateQuietly(String token) {

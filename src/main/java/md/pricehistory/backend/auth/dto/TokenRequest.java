@@ -9,7 +9,7 @@ public record TokenRequest(
 
         @Schema(
                 description = "Permissions to embed in the token. Omit for all default permissions.",
-                example = "[\"catalog:read\", \"tracked:read_own\"]"
+                example = "[\"account:read_self\", \"tracked:read_own\"]"
         )
         List<String> permissions
 ) {}

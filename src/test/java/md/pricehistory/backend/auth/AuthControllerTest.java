@@ -68,7 +68,7 @@ class AuthControllerTest {
         assertThat(jwt.getSubject()).isEqualTo("demo_user_auth_test");
         assertThat(jwt.getId()).isNotBlank();
         assertThat(jwt.getClaimAsStringList("permissions"))
-                .contains("catalog:read", "tracked:create_own", "tracked:delete_own");
+                .contains("tracked:create_own", "tracked:delete_own");
         assertThat(jwt.getExpiresAt()).isNotNull();
         assertThat(jwt.getIssuedAt()).isNotNull();
         assertThat(jwt.getExpiresAt()).isAfter(jwt.getIssuedAt());

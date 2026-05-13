@@ -4,7 +4,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public enum AppPermission {
-    CATALOG_READ("catalog:read"),
     ACCOUNT_READ_SELF("account:read_self"),
     TRACKED_READ_OWN("tracked:read_own"),
     TRACKED_CREATE_OWN("tracked:create_own"),

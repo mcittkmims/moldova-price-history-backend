@@ -31,7 +31,7 @@ public class SwaggerTokenController {
     @Operation(
             summary = "Issue a JWT via query params",
             description = "Omit `permissions` to get all default permissions. " +
-                    "Example: `?permissions=catalog:read&permissions=tracked:read_own`"
+                    "Example: `?permissions=account:read_self&permissions=tracked:read_own`"
     )
     public TokenResponse getToken(
             @RequestParam(defaultValue = "demo") String subject,
